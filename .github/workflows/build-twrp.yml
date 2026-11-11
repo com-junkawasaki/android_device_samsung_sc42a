@@ -1,0 +1,61 @@
+# Build TWRP recovery for Samsung Galaxy A21 (SC-42A) on GitHub Actions.
+#
+# Zero-cost path: this repository only holds the device tree. The OmniROM
+# sources are fetched inside the runner, so no local disk or paid builder
+# is needed. Trigger manually from the Actions tab (workflow_dispatch).
+
+name: TWRP SC-42A
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set up build space
+        uses: actions/checkout@v4
+        with:
+          path: device_tree
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            bc build-essential bison flex \
+            libncurses5-dev libncursesw5-dev \
+            libssl-dev zip wget unzip git \
+            python3 python-is-python3 rsync \
+            libxml2-utils xsltproc
+
+      - name: Install repo tool
+        run: |
+          mkdir -p ~/bin
+          curl -o ~/bin/repo https://storage.googleapis.com/git-repo-downloads/repo
+          chmod +x ~/bin/repo
+          echo "$HOME/bin" >> "$GITHUB_PATH"
+
+      - name: Clone OmniROM tree
+        run: |
+          mkdir -p omni && cd omni
+          repo init --depth=1 -u https://github.com/omnirom/android.git -b android-11.0
+          repo sync -j"$(nproc)"
+
+      - name: Place device tree
+        run: |
+          mkdir -p omni/device/samsung/sc42a
+          cp -r device_tree/* omni/device/samsung/sc42a/
+          ls omni/device/samsung/sc42a/
+
+      - name: Build recovery image
+        run: |
+          cd omni
+          source build/envsetup.sh
+          breakfast sc42a
+          make recoveryimage -j"$(nproc)"
+
+      - name: Upload recovery image
+        uses: actions/upload-artifact@v4
+        with:
+          name: recovery-sc42a
+          path: omni/out/target/product/sc42a/recovery.img
