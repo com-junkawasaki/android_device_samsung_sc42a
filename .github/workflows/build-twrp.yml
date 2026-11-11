@@ -89,7 +89,7 @@ jobs:
           print("BEFORE sdk lines:", [l for l in t.split("\n") if "sdk_version" in l][:4])
           t = re.sub(r'sdk_version\s*:\s*"system_current",?', 'sdk_version: "system_current",', t)
           t = re.sub(r'(android_app \{\n    name: "PermissionController",)',
-                     r'\1\n    sdk_version: "system_current",\n    min_sdk_version: "30",', t, count=1)
+                     r'\1\n    min_sdk_version: "30",', t, count=1)
           open(p, "w").write(t)
           t2 = open(p).read()
           print("AFTER sdk lines:", [l for l in t2.split("\n") if "sdk_version" in l or "min_sdk" in l][:6])
