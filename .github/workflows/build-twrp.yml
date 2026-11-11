@@ -87,11 +87,9 @@ jobs:
           p = "omni/packages/apps/PermissionController/Android.bp"
           t = open(p).read()
           print("BEFORE sdk lines:", [l for l in t.split("\n") if "sdk_version" in l][:4])
-          t = re.sub(r'sdk_version\s*:\s*"[^"]*"', 'sdk_version: "30"', t)
+          t = re.sub(r'sdk_version\s*:\s*"system_current",?', 'sdk_version: "system_current",', t)
           if 'min_sdk_version' not in t:
-              t = re.sub(r'sdk_version:\s*"30",?', 'sdk_version: "30",\n    min_sdk_version: "30",', t, count=1)
-          if 'updatable: false' not in t:
-              t = re.sub(r'(min_sdk_version:\s*"30",)', r'\1\n    updatable: false,', t, count=1)
+              t = re.sub(r'(sdk_version:\s*"system_current",)', r'\1\n    min_sdk_version: "30",', t, count=1)
           open(p, "w").write(t)
           t2 = open(p).read()
           print("AFTER sdk lines:", [l for l in t2.split("\n") if "sdk_version" in l or "min_sdk" in l][:6])
