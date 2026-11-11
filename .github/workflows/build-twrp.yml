@@ -83,13 +83,16 @@ jobs:
           mkdir -p omni/packages/apps/OmniGears/res/values
           printf '<?xml version="1.0" encoding="utf-8"?>\n<resources/>\n' > omni/packages/apps/OmniGears/res/values/strings.xml
           python3 - <<'PY'
+          import re
           p = "omni/packages/apps/PermissionController/Android.bp"
           t = open(p).read()
+          print("BEFORE sdk lines:", [l for l in t.split("\n") if "sdk_version" in l][:4])
+          t = re.sub(r'sdk_version\s*:\s*"[^"]*"', 'sdk_version: "30"', t)
           if 'min_sdk_version' not in t:
-              t = t.replace('sdk_version: "current"', 'sdk_version: "30"\n    min_sdk_version: "30"')
-          else:
-              t = t.replace('sdk_version: "current"', 'sdk_version: "30"')
+              t = re.sub(r'(sdk_version:\s*"30")', r'\1\n    min_sdk_version: "30"', t, count=1)
           open(p, "w").write(t)
+          t2 = open(p).read()
+          print("AFTER sdk lines:", [l for l in t2.split("\n") if "sdk_version" in l or "min_sdk" in l][:6])
           print("patched PermissionController")
           PY
 
