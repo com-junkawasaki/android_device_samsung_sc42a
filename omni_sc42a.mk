@@ -17,8 +17,11 @@
 # Release name
 PRODUCT_RELEASE_NAME := sc42a
 
+PRODUCT_TARGET_SDK_VERSION := 30
+PRODUCT_MIN_SDK_VERSION := 29
+
 # Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk) 
+$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 # Inherit some common Omni stuff.
 $(call inherit-product, vendor/omni/config/common.mk)
