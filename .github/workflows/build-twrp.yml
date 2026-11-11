@@ -58,14 +58,16 @@ jobs:
           p = cands[0] if cands else None
           t = open(p).read() if p else ""
           print("BEFORE sdk lines:", [l for l in t.split("\n") if "sdk_version" in l][:4])
-          t = re.sub(r'sdk_version\s*:\s*"system_current",?', 'sdk_version: "system_current",', t)
-          t = re.sub(r'(android_app \{\n    name: "PermissionController",)',
-                     r'\1\n    sdk_version: "system_current",\n    min_sdk_version: "30",', t, count=1)
-          t = t.replace('    platform_apis: true,', '    platform_apis: false,', 1)
-          open(p, "w").write(t)
-          t2 = open(p).read()
-          print("AFTER sdk lines:", [l for l in t2.split("\n") if "sdk_version" in l or "min_sdk" in l][:6])
-          print("patched PermissionController")
+          if p:
+              t = re.sub(r'sdk_version\s*:\s*"system_current",?', 'sdk_version: "system_current",', t)
+              t = re.sub(r'(android_app \{\n    name: "PermissionController",)',
+                         r'\1\n    sdk_version: "system_current",\n    min_sdk_version: "30",', t, count=1)
+              t = t.replace('    platform_apis: true,', '    platform_apis: false,', 1)
+          if p:
+              open(p, "w").write(t)
+              t2 = open(p).read()
+              print("AFTER sdk lines:", [l for l in t2.split("\n") if "sdk_version" in l or "min_sdk" in l][:6])
+          print("patched PermissionController" if p else "no PermissionController file (skipped)")
           PY
 
       - name: Build recovery image
