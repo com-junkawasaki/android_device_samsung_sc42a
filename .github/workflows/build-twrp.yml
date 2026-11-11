@@ -74,7 +74,9 @@ jobs:
         run: |
           cd omni
           source build/envsetup.sh
-          lunch omni_sc42a-eng
+          echo "---lunch attempt---"
+          lunch omni_sc42a-eng || echo "LUNCH_FAILED code=$?"
+          echo "TARGET_DEVICE=$TARGET_DEVICE PRODUCT=$TARGET_PRODUCT"
           make recoveryimage -j"$(nproc)"
 
       - name: Locate recovery image
