@@ -106,12 +106,14 @@ jobs:
 
       - name: Locate recovery image
         run: |
-          find omni/out/target/product -maxdepth 3 -name "*.img" -o -name "*recovery*" | head -n 20
-          ls omni/out/target/product/ 2>&1 | head -n 20
+          find omni/out -name "*.img" | head -n 30
+          find omni/out/target/product/sc42a -maxdepth 1 | head -n 30
 
       - name: Upload recovery image
         uses: actions/upload-artifact@v4
         with:
           name: recovery-sc42a
-          path: omni/out/target/product/sc42a/*
+          path: |
+            omni/out/**/recovery.img
+            omni/out/**/boot.img
           if-no-files-found: error
