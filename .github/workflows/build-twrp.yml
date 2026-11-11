@@ -39,6 +39,23 @@ jobs:
         run: |
           mkdir -p omni && cd omni
           repo init --depth=1 -u https://github.com/omnirom/android.git -b android-11
+          mkdir -p .repo/local_manifests
+          cat > .repo/local_manifests/0000-stale.xml <<'XML'
+          <manifest>
+            <remove name="android_frameworks_base" />
+            <remove name="android_system_core" />
+            <remove name="android_packages_apps_OmniChange" />
+            <remove name="android_packages_apps_OmniGears" />
+            <remove name="android_packages_apps_OmniRemote" />
+            <remove name="android_packages_apps_OmniStyle" />
+            <remove name="android_packages_apps_OmniSwitch" />
+            <remove name="android_packages_apps_OpenDelta" />
+            <remove name="android_packages_services_OmniJaws" />
+            <project path="frameworks/base" name="platform/frameworks/base" remote="aosp" revision="refs/tags/android-11.0.0_r38" />
+            <project path="system/core" name="platform/system/core" remote="aosp" revision="refs/tags/android-11.0.0_r38" />
+          </manifest>
+          XML
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
           repo sync -j"$(nproc)"
 
       - name: Place device tree
