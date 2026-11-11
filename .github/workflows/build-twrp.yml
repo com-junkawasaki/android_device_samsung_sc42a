@@ -82,7 +82,7 @@ jobs:
         run: |
           cd omni
           source build/envsetup.sh
-          breakfast sc42a
+          lunch omni_sc42a-eng
           make recoveryimage -j"$(nproc)"
 
       - name: Upload recovery image
