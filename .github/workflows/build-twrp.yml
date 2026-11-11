@@ -38,7 +38,7 @@ jobs:
       - name: Clone OmniROM tree
         run: |
           mkdir -p omni && cd omni
-          repo init --depth=1 -u https://github.com/omnirom/android.git -b android-11.0
+          repo init --depth=1 -u https://github.com/omnirom/android.git -b android-11
           repo sync -j"$(nproc)"
 
       - name: Place device tree
