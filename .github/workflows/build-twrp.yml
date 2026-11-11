@@ -78,6 +78,11 @@ jobs:
           cp -r device_tree/* omni/device/samsung/sc42a/
           ls omni/device/samsung/sc42a/
 
+      - name: Stub removed Omni resources
+        run: |
+          mkdir -p omni/packages/apps/OmniGears/res/values
+          printf '<?xml version="1.0" encoding="utf-8"?>\n<resources/>\n' > omni/packages/apps/OmniGears/res/values/strings.xml
+
       - name: Build recovery image
         run: |
           cd omni
