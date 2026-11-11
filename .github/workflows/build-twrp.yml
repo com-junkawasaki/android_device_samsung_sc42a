@@ -39,22 +39,21 @@ jobs:
         run: |
           mkdir -p omni && cd omni
           repo init --depth=1 -u https://github.com/omnirom/android.git -b android-11
-          mkdir -p .repo/local_manifests
-          cat > .repo/local_manifests/0000-stale.xml <<'XML'
-          <manifest>
-            <remove name="android_frameworks_base" />
-            <remove name="android_system_core" />
-            <remove name="android_packages_apps_OmniChange" />
-            <remove name="android_packages_apps_OmniGears" />
-            <remove name="android_packages_apps_OmniRemote" />
-            <remove name="android_packages_apps_OmniStyle" />
-            <remove name="android_packages_apps_OmniSwitch" />
-            <remove name="android_packages_apps_OpenDelta" />
-            <remove name="android_packages_services_OmniJaws" />
-            <project path="frameworks/base" name="platform/frameworks/base" remote="aosp" revision="refs/tags/android-11.0.0_r38" />
-            <project path="system/core" name="platform/system/core" remote="aosp" revision="refs/tags/android-11.0.0_r38" />
-          </manifest>
-          XML
+          python3 - <<'PY'
+          p = ".repo/manifest.xml"
+          t = open(p).read()
+          t = t.replace('path="frameworks/base" name="android_frameworks_base" remote="omnirom" revision="android-11"',
+                        'path="frameworks/base" name="platform/frameworks/base" remote="aosp" revision="refs/tags/android-11.0.0_r38"')
+          t = t.replace('path="system/core" name="android_system_core" remote="omnirom" revision="android-11"',
+                        'path="system/core" name="platform/system/core" remote="aosp" revision="refs/tags/android-11.0.0_r38"')
+          for name in ["android_packages_apps_OmniChange", "android_packages_apps_OmniGears",
+                       "android_packages_apps_OmniRemote", "android_packages_apps_OmniStyle",
+                       "android_packages_apps_OmniSwitch", "android_packages_apps_OpenDelta",
+                       "android_packages_services_OmniJaws"]:
+              t = "\n".join(line for line in t.split("\n") if f'name="{name}"' not in line)
+          open(p, "w").write(t)
+          print("patched stale projects")
+          PY
           git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
           repo sync -j"$(nproc)"
 
