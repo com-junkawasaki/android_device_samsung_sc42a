@@ -92,7 +92,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: recovery-sc42a
-          path: |
-            omni/out/**/recovery.img
-            omni/out/**/boot.img
+          path: omni/out/target/product/sc42a/recovery.img
           if-no-files-found: error
